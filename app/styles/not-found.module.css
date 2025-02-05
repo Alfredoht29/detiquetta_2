@@ -1,0 +1,22 @@
+.container {
+    @apply min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600;
+  }
+  
+  .heroText {
+    font-size: 9rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 1rem;
+    transform: rotateX(15deg) skewY(-10deg);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    perspective: 1000px;
+  }
+  
+  .subText {
+    @apply text-2xl text-white mb-8;
+  }
+  
+  .homeLink {
+    @apply px-6 py-3 bg-white text-blue-600 rounded-full shadow-lg hover:bg-gray-100 transition;
+  }
+  

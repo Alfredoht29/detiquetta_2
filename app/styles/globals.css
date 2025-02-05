@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f8f9f4;
+  --foreground: #171717;
+  --customOrange: #E73D00;
+}
+
+body {
+  color: var(--foreground);
+  overflow-x: hidden;
+  background: white;
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+@media (max-width: 767px) {
+  body{
+      width: 100vw;
+  }
+}
+
+@layer components{
+  .bg-customwhite{
+    background: var(--background);
+  }
+  .bg-customOrange{
+    background: var(--customOrange);
+  }
+  .nav-def{
+    @apply flex-grow flex justify-center text-center pt-4 px-2 no-underline text-base text-black mt-4;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-bottom: 1px solid black;
+  }
+  .nav-def2{
+    @apply flex-grow flex justify-center text-center pt-2 px-2 no-underline text-base text-black mt-4;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-bottom: 1px solid black;
+  }
+  .nav-active{
+    @apply flex-grow flex justify-center text-center pt-4 px-2 mt-4;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-top:1px solid black ;
+    border-left:1px solid black ;
+    border-right:1px solid black ;
+    color:var(--customOrange);
+  }
+  .nav-cdef{
+    @apply flex-grow flex justify-center text-center pt-4 px-2 no-underline text-base mt-4;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-bottom: 1px solid black;
+    color:#FF0000;
+  }
+  .nav-cactive{
+    @apply flex-grow flex justify-center text-center pt-4 px-2 mt-4;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-top:1px solid black ;
+    border-left:1px solid black ;
+    border-right:1px solid black ;
+    color:#FF0000;
+  }
+  .text-customor{
+    color:var(--customOrange);
+  }
+  .text-customred{
+    color:#FF0000
+  }
+  .detiqueta-searchbar{
+    @apply flex items-center bg-white rounded-md border-2 border-black border-solid p-1;
+  }
+  .btn-orange{
+    @apply rounded-md p-2 ml-4;
+    color: white;
+    background-color: var(--customOrange);
+  }
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  .modal {
+    z-index: 1000;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  
+    
+}

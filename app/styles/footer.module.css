@@ -1,0 +1,52 @@
+/* footer.module.css */
+
+.backgroundContainer {
+  @apply mt-4;
+  position: relative; 
+  width: 100vw; 
+  height: 40vh; 
+  background-image: url("/assets/bg-customgray.png");
+  background-size: cover;
+  background-position: center; 
+  background-repeat: no-repeat; 
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.whatsappInput {
+  /* Tailwind utilities via @apply */
+  @apply w-5/12 p-4 rounded-md;
+  position: absolute; /* Absolute positioning relative to backgroundContainer */
+  bottom: 90%;
+  background-color: var(--customOrange);
+  color: white;
+  z-index: 3; /* Higher than overlayContent */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Center the text */
+}
+
+.overlayContent {
+  position: relative; /* Relative positioning within backgroundContainer */
+  top: 10%;
+  color: rgb(0, 0, 0); 
+  z-index: 2; /* Lower than whatsappInput */
+  text-align: center; /* Ensure content is centered */
+}
+
+@media (max-width: 767px) {
+  .backgroundContainer {
+    width: 100vw;
+    height: 80vh;
+    flex-direction: column;
+  }
+  
+  .whatsappInput {
+    @apply w-11/12 p-2 mb-8; /* Adjust width for mobile */
+    position: absolute; /* Keep absolute positioning */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3; /* Ensure it stays on top */
+  }
+}
