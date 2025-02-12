@@ -30,10 +30,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body>
         <Navbar />
         <main>{children}</main>
-        <div className="h-5 text-transparent">
-          <p>X</p>
-        </div>
-        <Footer />
+        {/* <Footer /> */}
       </body>
     </html>
   );

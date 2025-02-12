@@ -52,70 +52,23 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-10 bg-white">
       <div className="hidden md:flex justify-between items-center w-full">
-        <div className="ml-12 flex-none flex space-x-4">
-          <a
-            href="https://www.facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pt-7"
-          >
-            <Image
-              src="/assets/fb.svg"
-              alt="Facebook Icon"
-              width={50}
-              height={50}
-            />
-          </a>
-          <a
-            href="https://www.instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pt-7"
-          >
-            <Image
-              src="/assets/ig.svg"
-              alt="Instagram Icon"
-              width={50}
-              height={50}
-            />
-          </a>
-        </div>
+  <div className="flex-1 flex justify-start">
+    <div className="ml-12 flex space-x-4">
+      <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="pt-7">
+        <Image src="/assets/fb.svg" alt="Facebook Icon" width={50} height={50} />
+      </a>
+      <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="pt-7">
+        <Image src="/assets/ig.svg" alt="Instagram Icon" width={50} height={50} />
+      </a>
+    </div>
+  </div>
 
-        <div className="flex">
-          <Image
-            src="/assets/detiquetalogo.png"
-            alt="detiqueta logo"
-            width={322}
-            height={90}
-            className="ml-20"
-          />
-        </div>
+  <div className="flex-1 flex justify-center">
+    <Image src="/assets/detiquetalogo.png" alt="detiqueta logo" width={322} height={90} />
+  </div>
 
-        <div className="flex items-center pt-7 px-2">
-          <div className="detiqueta-searchbar">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="#E73D00"
-              className="h-5 w-5 mr-2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-              />
-            </svg>
-            <input
-              type="text"
-              className="w-48 p-2 border-none focus:outline-none"
-              placeholder="Busca"
-            />
-            <button className="btn-orange ml-2">Búsqueda</button>
-          </div>
-        </div>
-      </div>
+  <div className="flex-1"></div>
+</div>
 
       <div className="px-4 pb-8 sm:px-2 lg:px-8">
         <div className="hidden md:flex h-16">
@@ -176,7 +129,7 @@ const Navbar = () => {
               pathname === "/cart" ? "nav-active" : "nav-def"
             } py-2`}
           >
-            CARRITO
+            LISTA DE DESEOS 
           </Link>
           <button className="nav-def2 pb-2" onClick={()=>(document.getElementById('my_modal_5') as HTMLDialogElement).showModal()}>UBICACION</button>
         </div>

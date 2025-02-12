@@ -71,9 +71,6 @@ body {
   .text-customred{
     color:#FF0000
   }
-  .detiqueta-searchbar{
-    @apply flex items-center bg-white rounded-md border-2 border-black border-solid p-1;
-  }
   .btn-orange{
     @apply rounded-md p-2 ml-4;
     color: white;
