@@ -82,6 +82,9 @@ body {
   .modal {
     z-index: 1000;
   }
+  .roboto-mono-font{
+    font-family: "Roboto Mono", serif;
+  }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

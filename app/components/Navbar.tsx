@@ -124,9 +124,9 @@ const Navbar = () => {
           </Link>
 
           <Link
-            href="/cart"
+            href="/wishlist"
             className={`${
-              pathname === "/cart" ? "nav-active" : "nav-def"
+              pathname === "/wishlist" ? "nav-active" : "nav-def"
             } py-2`}
           >
             LISTA DE DESEOS 
@@ -230,9 +230,9 @@ const Navbar = () => {
               CLIENTES
             </Link>
             <Link
-              href="/cart"
+              href="/wishlist"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
-                pathname === "/cart"
+                pathname === "/wishlist"
                   ? "text-customor"
                   : "text-gray-700 hover:text-gray-900"
               }`}
