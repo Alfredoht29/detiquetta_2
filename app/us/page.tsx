@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 
 const Nosotros = () => {
   return (
@@ -10,11 +11,14 @@ const Nosotros = () => {
           SI TU PROMOCIÓN NO ESTÁ AQUÍ,&nbsp; NO ESTÁ DONDE IMPORTA
         </div>
         <div className="flex-1 flex justify-center">
-          <img src="assets/usicon.png" alt="" className="md:max-w-[300px] h-auto" />
+          <img
+            src="assets/usicon.png"
+            alt=""
+            className="md:max-w-[300px] h-auto"
+          />
         </div>
       </div>
 
-      {/* Sección de planes ajustada */}
       <div className="flex flex-wrap justify-center gap-4 mt-8">
         {/* Plan 499 */}
         <div className="border-2 border-black w-72 md:w-80 p-4">
@@ -26,10 +30,13 @@ const Nosotros = () => {
             <p className="text-6xl">499</p>
           </div>
           <p className="text-justify mt-4">
-            Para emprendedores y negocios que están arrancando y quieren comenzar a vender.
+            Para emprendedores y negocios que están arrancando y quieren
+            comenzar a vender.
           </p>
           <div className="flex justify-center mt-6">
-            <button className="bg-black text-white p-2">" ENTRA AL MAPA "</button>
+            <Link href="/plan-table">
+              <button className="bg-black text-white p-2">ENTRA AL MAPA</button>
+            </Link>
           </div>
         </div>
 
@@ -46,7 +53,11 @@ const Nosotros = () => {
             Para negocios con ventas que buscan destacar entre la competencia.
           </p>
           <div className="flex justify-center pt-12">
-            <button className="bg-white text-black p-2">" MARCA TU TERRITORIO "</button>
+            <Link href="/plan-table">
+              <button className="bg-white text-black p-2">
+                MARCA TU TERRITORIO
+              </button>
+            </Link>
           </div>
         </div>
 
@@ -63,39 +74,46 @@ const Nosotros = () => {
             Para líderes empresarios que buscan la atención de su categoría.
           </p>
           <div className="flex justify-center pt-12">
-            <button className="bg-black text-white p-2">" REY DE LA CUADRA "</button>
+            <Link href="/plan-table">
+              <button className="bg-black text-white p-2">
+                REY DE LA CUADRA
+              </button>
+            </Link>
           </div>
         </div>
       </div>
+
       <div className="py-4"></div>
       {/* Texto y misión */}
+      <div className="p-8">
       <h2 className="text-2xl text-customor font-bold">
-         "Al mal tiempo, buena comida"
+        "Al mal tiempo, buena comida"
       </h2>
       <p>
         De Etiqueta es una empresa orgullosamente veracruzana dedicada a mejorar
-         tu experiencia de compra. Nos especializamos en recopilar y ofrecerte
+        tu experiencia de compra. Nos especializamos en recopilar y ofrecerte
         los descuentos más exclusivos del día para que disfrutes de tus comidas
         favoritas sin romper tu presupuesto. Ya sea que prefieras pedir comida
-         para llevar o necesites un almuerzo rápido, estamos aquí para ayudarte a
+        para llevar o necesites un almuerzo rápido, estamos aquí para ayudarte a
         encontrar la mejor oferta del día.
-       </p>
-       <br />
-       <p>
-         Nuestra página se actualiza continuamente, lo que significa que siempre
-       encontrarás algo nuevo y emocionante. Las promociones cambian
-         diariamente, así que cada visita es una nueva oportunidad para descubrir
-         grandes ahorros y probar algo diferente.
+      </p>
+      <br />
+      <p>
+        Nuestra página se actualiza continuamente, lo que significa que siempre
+        encontrarás algo nuevo y emocionante. Las promociones cambian
+        diariamente, así que cada visita es una nueva oportunidad para descubrir
+        grandes ahorros y probar algo diferente.
       </p>
       <br />
       <h2 className="text-2xl text-customor font-bold">MISIÓN</h2>
       <p>
         Estamos comprometidos en brindar una experiencia satisfactoria y
         conveniente tanto para consumidores como para restauranteros.
-         ¡Contáctanos y déjanos ser tu mejor aliado en la búsqueda de grandes
+        ¡Contáctanos y déjanos ser tu mejor aliado en la búsqueda de grandes
         descuentos y deliciosas comidas!
       </p>
-     </div>
+      </div>
+    </div>
   );
 };
 

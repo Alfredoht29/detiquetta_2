@@ -12,6 +12,7 @@
     "@heroicons/react": "^1.0.6",
     "axios": "^1.7.9",
     "hammerjs": "^2.0.8",
+    "lucide-react": "^0.476.0",
     "next": "14.2.13",
     "react": "^18",
     "react-dom": "^18",
