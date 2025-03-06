@@ -115,15 +115,6 @@ const Navbar = () => {
           </Link>
 
           <Link
-            href="/clients"
-            className={`${
-              pathname === "/clients" ? "nav-active" : "nav-def"
-            } py-2`}
-          >
-            CLIENTES
-          </Link>
-
-          <Link
             href="/wishlist"
             className={`${
               pathname === "/wishlist" ? "nav-active" : "nav-def"
@@ -218,17 +209,7 @@ const Navbar = () => {
             >
               RESERVAR
             </Link>
-            <Link
-              href="/clients"
-              className={`block px-3 py-2 rounded-md text-base font-medium ${
-                pathname === "/clients"
-                  ? "text-customor"
-                  : "text-gray-700 hover:text-gray-900"
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              CLIENTES
-            </Link>
+      
             <Link
               href="/wishlist"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
