@@ -1,62 +1,47 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
-// Estructura de la promoción, basada en tu ejemplo
 interface Promotion {
   id: number;
   documentId: string;
-
-@@ -18,20 +19,34 @@ interface Promotion {
+  infoPromo: string;
+  expirationDate: string;
   urlPromotion?: string;
 }
 
 const Page = () => {
-export default function Page() {
-  // Lista completa de promociones (incluyendo repeticiones).
   const [promotions, setPromotions] = useState<Promotion[]>([]);
-  // Lista base (la primera tanda de promociones que cargamos).
   const [basePromotions, setBasePromotions] = useState<Promotion[]>([]);
-  // Bandera para mostrar skeleton (cargando) o lista final.
   const [loading, setLoading] = useState(true);
   const [selectedPromo, setSelectedPromo] = useState<Promotion | null>(null);
-
-  // Referencia al contenedor con scroll vertical.
   const containerRef = useRef<HTMLDivElement>(null);
-  // Referencia al sentinela (un div al final para el IntersectionObserver).
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  // Al montar, obtenemos las promociones desde tu API de Strapi.
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
-        const response = await axios.get<{ data: Promotion[] }>("http://localhost:1337/api/promotions", {
-          headers: {
-            Authorization: `Bearer 90b0d8b697ad0c5e2a3221575008228e914ab7695272327933d07a92728652ff2e46e9ae6865afb2213daf4eabf4a8b008947e9917e260498dc486d6a152541b39cb5f16edc143efc907c06cd05134214a1ed45ac3297c3cea603ba2fcc8ca0762b70dc7647c8593b55c6880056488870a7b1f6614ff82a7f971846afc720a5c`
         const response = await axios.get<{ data: Promotion[] }>(
           "http://localhost:1337/api/promotions",
           {
             headers: {
-              Authorization: `Bearer 90b0d8b697ad0c5e2a3221575008228e914ab7695272327933d07a92728652ff2e46e9ae6865afb2213daf4eabf4a8b008947e9917e260498dc486d6a152541b39cb5f16edc143efc907c06cd05134214a1ed45ac3297c3cea603ba2fcc8ca0762b70dc7647c8593b55c6880056488870a7b1f6614ff82a7f971846afc720a5c`,
+              Authorization: `Bearer 23aa03f93c96a744b04d81c82b9c4b594f6ab052ed1a574297bca5f888d81159fce3d920e85447154c9c706f40fde996631274fc9c8aab7cc5e1154a1b06c1ce99e5e8ff65fb8a667e450d90ac087bdfda3eabcbccee2fa413219cb7ed33aeb5c32a9853812f3ded78ef2f80c4d85b8c3716761a8b85d47b3e5095c2801d00ab`,
             },
           }
-        });
-        setPromotions(response.data.data);
         );
         const data = response.data.data;
         setBasePromotions(data);
         setPromotions(data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching promotions:", error);
-      } finally {
+      }
+    };
 
-@@ -42,46 +57,98 @@ const Page = () => {
     fetchPromotions();
   }, []);
 
-  // Configuramos IntersectionObserver para el sentinelaRef.
   useEffect(() => {
     if (!sentinelRef.current || !containerRef.current) return;
 
@@ -81,7 +66,6 @@ export default function Page() {
     };
   }, [promotions]);
 
-  // Agregamos otra tanda de "basePromotions" al final de "promotions"
   const loadMore = () => {
     if (basePromotions.length > 0) {
       setPromotions((prev) => [...prev, ...basePromotions]);
@@ -89,93 +73,72 @@ export default function Page() {
   };
 
   return (
-    <div className="h-full mx-auto pb-4 overflow-y-auto no-scrollbar flex items-center justify-center">
-      <div className="max-h-full">
+    <div className="h-full pb-4 overflow-y-auto no-scrollbar flex items-center justify-center">
+      <div className="w-screen">
         {selectedPromo ? (
-          <div className="flex flex-col md:flex-row items-center p-4 border rounded-lg shadow-lg">
-            <img src={selectedPromo.urlPromotion} alt="Promo" className="w-80 h-80 object-cover rounded-lg" />
+          <div className="landscape:w-1/2 landscape:mx-auto landscape:mt-20 flex flex-col md:flex-row items-center p-4 border rounded-lg shadow-lg">
+            <img
+              src={selectedPromo.urlPromotion}
+              alt="Promo"
+              className="w-80 h-80 object-cover rounded-lg"
+            />
             <div className="ml-6 text-left">
               <h2 className="text-2xl font-bold">{selectedPromo.infoPromo}</h2>
               <p className="text-gray-600 mt-2">Expira: {selectedPromo.expirationDate}</p>
-              <button className="mt-4 bg-red-500 text-white px-4 py-2 rounded" onClick={() => setSelectedPromo(null)}>Cerrar</button>
+              <button
+                className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+                onClick={() => setSelectedPromo(null)}
+              >
+                Cerrar
+              </button>
             </div>
-    <div className="w-full max-w-screen-xl mx-auto py-8 px-4">
-      <h2 className="text-2xl font-bold mb-4">Promociones destacadas</h2>
-
-      {/* Contenedor con altura fija y scroll vertical */}
-      <div
-        ref={containerRef}
-        className="h-[80vh] overflow-y-auto border border-gray-300 rounded-lg p-4 relative"
-      >
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {Array(8)
-              .fill(0)
-              .map((_, index) => (
-                <div
-                  key={index}
-                  className="h-44 bg-gray-200 rounded animate-pulse"
-                />
-              ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 place-items-center">
-            {loading
-              ? Array(6)
-                  .fill(0)
-                  .map((_, index) => (
-                    <div className="flex flex-col w-52 h-64 gap-4" key={index}>
-                      <div className="skeleton h-52 w-full"></div>
-                    </div>
-                  ))
-              : promotions.map((promo) => (
-                  <div 
-                    className="relative flex flex-col w-52 h-52 rounded-lg shadow-lg border overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl" 
-                    key={promo.id}
-                    onClick={() => setSelectedPromo(promo)}
-                  >
-          <>
-            {/* Grid de tarjetas */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {promotions.map((promo, index) => (
-                <div
-                  key={`${promo.id}-${index}`}
-                  className="bg-white rounded-lg shadow overflow-hidden"
-                >
-                  {/* Imagen con relación de aspecto 16:9 */}
-                  <div className="relative w-full aspect-[16/9] bg-gray-100">
-                    <img
-                      src={promo.urlPromotion}
-                      alt={`Promo ${promo.id}`}
-                      className="h-52 w-full object-cover transition-opacity duration-300 hover:opacity-90"
-                      src={promo.urlPromotion || "/placeholder.svg"}
-                      alt={promo.infoPromo}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-          </div>
-
-                  {/* Información y botón */}
-                  <div className="p-4">
-                    <h3 className="font-semibold text-base mb-2">
-                      {promo.infoPromo}
-                    </h3>
-                    <button
-  type="button"
-  className="w-full px-3 py-2 bg-[#EE733B] text-white text-sm rounded hover:bg-[#ff6b25] transition-colors"
->
-  Ver detalle
-</button>
-
-                  </div>
+          <div className="w-full p-2 px-8 ml-8">
+            <h2 className="text-2xl font-bold mb-4">Promociones destacadas</h2>
+            <div
+              ref={containerRef}
+              className="h-[80vh] overflow-y-auto p-4 relative"
+            >
+              {loading ? (
+                <div  className="relative flex flex-col w-64 h-64 rounded-lg border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl">
+                  {Array(8)
+                    .fill(0)
+                    .map((_, index) => (
+                      <div key={index} className="h-44 bg-gray-200 rounded animate-pulse" />
+                    ))}
                 </div>
-              ))}
+              ) : (
+                <div className="grid portrait:grid-cols-1 landscape:grid-cols-4 mx-auto gap-4">
+                  {promotions.map((promo) => (
+                    <div
+                      key={promo.id}
+                      className="relative flex flex-col w-64 h-64 rounded-lg border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl"
+                      onClick={() => setSelectedPromo(promo)}
+                    >
+                      <div className="relative w-full aspect-[16/9] bg-gray-100">
+                        <img
+                          src={promo.urlPromotion || "/placeholder.svg"}
+                          alt={promo.infoPromo}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex flex-col justify-between flex-grow p-3">
+                        <h3 className="font-extrabold text-md underline decoration-4 line-clamp-2">{promo.infoPromo}</h3>
+                        <button
+                          type="button"
+                          className="w-full px-3 py-2 bg-[#EE733B] text-white text-sm rounded hover:bg-[#ff6b25] transition-colors"
+                        >
+                          Ver detalle
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div ref={sentinelRef} className="h-8" />
             </div>
-
-            {/* Sentinela para cargar más promociones */}
-            <div ref={sentinelRef} className="h-8" />
-          </>
+          </div>
         )}
       </div>
     </div>
@@ -183,4 +146,3 @@ export default function Page() {
 };
 
 export default Page;
-}
