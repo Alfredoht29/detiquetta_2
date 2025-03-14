@@ -10,10 +10,21 @@ export default function Reserve() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [isMobileSafariBrowser, setIsMobileSafariBrowser] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     // Detect if the browser is mobile Safari
     setIsMobileSafariBrowser(isMobileSafari());
+
+    // Detectar si es un dispositivo móvil usando window.innerWidth
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   return (
@@ -64,9 +75,7 @@ export default function Reserve() {
 
         {/* Fecha Input */}
         <div>
-          {isMobileSafariBrowser ? (
-            <DateInput label="Fecha" value={date} onChange={setDate} />
-          ) : (
+          {isMobile ? (
             <div>
               <label htmlFor="fecha" className="block text-lg text-customor mb-2">
                 Fecha
@@ -77,8 +86,14 @@ export default function Reserve() {
                 className="text-lg text-customor placeholder:text-customor rounded bg-white p-4 w-full"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
+                style={{
+                  WebkitAppearance: 'none',
+                  maxHeight: '44px'
+                }}
               />
             </div>
+          ) : (
+            <DateInput label="Fecha" value={date} onChange={setDate} />
           )}
         </div>
 
