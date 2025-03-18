@@ -23,10 +23,10 @@ const Page = () => {
     const fetchPromotions = async () => {
       try {
         const response = await axios.get<{ data: Promotion[] }>(
-          "http://localhost:1337/api/promotions",
+          "http://209.38.139.117:1337/api/promotions",
           {
             headers: {
-              Authorization: `Bearer 23aa03f93c96a744b04d81c82b9c4b594f6ab052ed1a574297bca5f888d81159fce3d920e85447154c9c706f40fde996631274fc9c8aab7cc5e1154a1b06c1ce99e5e8ff65fb8a667e450d90ac087bdfda3eabcbccee2fa413219cb7ed33aeb5c32a9853812f3ded78ef2f80c4d85b8c3716761a8b85d47b3e5095c2801d00ab`,
+              Authorization: `Bearer b5814fca6bbdb899336b91b85d9927604f4ada67c3ec0ebbc080221738e1581e10987c044a946d7a063a7307af2fdc221501a4e5a25c5c514e08062ea4e82f85e7b7b2c62837fd32900920bda548e9cde1a75f362bd4568de7c129a966547fc8fcd62ad25cf235042327df3969288505c7d620f3b2f43ac761f6937735954bc7`,
             },
           }
         );
