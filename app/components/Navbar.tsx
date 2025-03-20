@@ -1,71 +1,79 @@
-"use client"
-import Link from "next/link"
-import type React from "react"
-
-import Image from "next/image"
-import { useNavbar } from "../stores/navBarStore"
-import { useState, useEffect, useRef } from "react"
-import { MenuIcon, XIcon } from "@heroicons/react/outline"
-import { usePathname } from "next/navigation"
-import { useLocationStore } from "../stores/useLocationStore"
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { useNavbar } from "../stores/navBarStore";
+import { useState, useEffect, useRef } from "react";
+import { MenuIcon, XIcon } from "@heroicons/react/outline";
+import { usePathname } from "next/navigation";
+import { useLocationStore } from "../stores/useLocationStore";
 
 const Navbar = () => {
-  const pathname = usePathname()
-  const { showNavbar } = useNavbar()
-  const [isOpen, setIsOpen] = useState(false)
-  const [hours, setHours] = useState(0)
-  const [minutes, setMinutes] = useState(0)
-  const [seconds, setSeconds] = useState(0)
-  const menuRef = useRef<HTMLDivElement | null>(null) // Ref for detecting clicks outside
+  const pathname = usePathname();
+  const { showNavbar } = useNavbar();
+  const [isOpen, setIsOpen] = useState(false);
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+
+  const menuRef = useRef<HTMLDivElement | null>(null); // Ref for the navbar menu
+  const modalRef = useRef<HTMLDialogElement | null>(null); // Ref for the Ubicación modal
 
   const calculateCountdown = () => {
-    const now = new Date()
-    const midnight = new Date()
-    midnight.setHours(24, 0, 0, 0)
-    const timeRemaining = midnight.getTime() - now.getTime()
-    setHours(Math.floor(timeRemaining / (1000 * 60 * 60)))
-    setMinutes(Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60)))
-    setSeconds(Math.floor((timeRemaining % (1000 * 60)) / 1000))
-  }
+    const now = new Date();
+    const midnight = new Date();
+    midnight.setHours(24, 0, 0, 0);
+    const timeRemaining = midnight.getTime() - now.getTime();
+    setHours(Math.floor(timeRemaining / (1000 * 60 * 60)));
+    setMinutes(Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60)));
+    setSeconds(Math.floor((timeRemaining % (1000 * 60)) / 1000));
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      calculateCountdown()
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [])
+      calculateCountdown();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
-  // Close the menu when clicking outside
+  // Close menu when clicking outside (except modal)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      // Don't close if clicking on a modal
-      const target = event.target as HTMLElement
-      if (target.closest("dialog") || target.closest(".modal-box")) {
-        return
-      }
-
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
+      const target = event.target as HTMLElement;
+      if (modalRef.current?.contains(target)) return; // Ignore modal clicks
+      if (menuRef.current && !menuRef.current.contains(target)) {
+        setIsOpen(false);
       }
     }
 
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener("mousedown", handleClickOutside);
     }
 
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [isOpen])
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
 
-  const { selectedLocation, setSelectedLocation } = useLocationStore()
-  const locations = ["Location 1", "Location 2", "Location 3"]
+  const { selectedLocation, setSelectedLocation } = useLocationStore();
+  const locations = ["Location 1", "Location 2", "Location 3"];
 
   const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLocation(event.target.value)
-  }
+    setSelectedLocation(event.target.value);
+  };
 
-  if (!showNavbar) return null
+  const openModal = () => {
+    if (modalRef.current) {
+      modalRef.current.showModal();
+    }
+  };
+
+  const closeModal = () => {
+    if (modalRef.current) {
+      modalRef.current.close();
+    }
+  };
+
+  if (!showNavbar) return null;
 
   return (
     <nav className="sticky top-0 z-10 bg-white">
@@ -89,6 +97,7 @@ const Navbar = () => {
       </div>
 
       <div className="px-4 pb-8 sm:px-2 lg:px-8">
+        {/* Desktop Navbar */}
         <div className="hidden md:flex h-16">
           <Link href="/" className={`${pathname === "/" ? "nav-active" : "nav-def"} py-2`}>
             INICIO
@@ -113,10 +122,8 @@ const Navbar = () => {
           <Link href="/wishlist" className={`${pathname === "/wishlist" ? "nav-active" : "nav-def"} py-2`}>
             LISTA DE DESEOS
           </Link>
-          <button
-            className="nav-def2 pb-2"
-            onClick={() => (document.getElementById("my_modal_5") as HTMLDialogElement).showModal()}
-          >
+
+          <button className="nav-def2 pb-2" onClick={openModal}>
             UBICACION
           </button>
         </div>
@@ -136,85 +143,33 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div ref={menuRef} className="md:hidden">
-          <div className="px-2 pt-4 pb-3 space-y-1 sm:px-3 bg-white">
-            <Link
-              href="/"
-              className={`block px-3 py-2 rounded-md text-base font-medium ${
-                pathname === "/" ? "text-customor" : "text-gray-700 hover:text-gray-900"
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
+        <div ref={menuRef} className="md:hidden bg-white shadow-md">
+          <div className="px-2 pt-4 pb-3 space-y-1 sm:px-3">
+            <Link href="/" className="block px-3 py-2 text-gray-700 hover:text-gray-900" onClick={() => setIsOpen(false)}>
               INICIO
             </Link>
-            <Link
-              href="/menu"
-              className={"block px-3 py-2 rounded-md text-base font-medium text-customred"}
-              onClick={() => setIsOpen(false)}
-            >
-              <span className="countdown font-mono text-xl">
-                <span style={{ "--value": hours } as React.CSSProperties}></span>h
-                <span style={{ "--value": minutes } as React.CSSProperties}></span>m
-                <span style={{ "--value": seconds } as React.CSSProperties}></span>s
-              </span>
-            </Link>
-            <Link
-              href="/us"
-              className={`block px-3 py-2 rounded-md text-base font-medium ${
-                pathname === "/us" ? "text-customor" : "text-gray-700 hover:text-gray-900"
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
+            <Link href="/us" className="block px-3 py-2 text-gray-700 hover:text-gray-900" onClick={() => setIsOpen(false)}>
               NOSOTROS
             </Link>
-            <Link
-              href="/reserve"
-              className={`block px-3 py-2 rounded-md text-base font-medium ${
-                pathname === "/reserve" ? "text-customor" : "text-gray-700 hover:text-gray-900"
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
+            <Link href="/reserve" className="block px-3 py-2 text-gray-700 hover:text-gray-900" onClick={() => setIsOpen(false)}>
               RESERVAR
             </Link>
-
-            <Link
-              href="/wishlist"
-              className={`block px-3 py-2 rounded-md text-base font-medium ${
-                pathname === "/wishlist" ? "text-customor" : "text-gray-700 hover:text-gray-900"
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              WISHLIST
+            <Link href="/wishlist" className="block px-3 py-2 text-gray-700 hover:text-gray-900" onClick={() => setIsOpen(false)}>
+              LISTA DE DESEOS
             </Link>
-            <span
-              className={`block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}
-              onClick={() => {
-                const modal = document.getElementById("my_modal_5")
-                if (modal) {
-                  ;(modal as HTMLDialogElement).showModal()
-                }
-                setIsOpen(false)
-              }}
-            >
+            <button className="block px-3 py-2 text-gray-700 hover:text-gray-900" onClick={openModal}>
               UBICACION
-            </span>
+            </button>
           </div>
         </div>
       )}
 
-      {/* Location Modal */}
-      <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
+      {/* Ubicación Modal */}
+      <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Selecciona tu ciudad</h3>
-          <br />
-          <select
-            value={selectedLocation}
-            onChange={handleLocationChange}
-            className="select w-full max-w-xs"
-          >
-            <option value="" disabled>
-              UBICACION
-            </option>
+          <select value={selectedLocation} onChange={handleLocationChange} className="select select-warning w-full max-w-xs">
+            <option value="" disabled>UBICACION</option>
             {locations.map((location) => (
               <option key={location} value={location}>
                 {location}
@@ -222,16 +177,12 @@ const Navbar = () => {
             ))}
           </select>
           <div className="modal-action">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn">Close</button>
-            </form>
+            <button className="btn" onClick={closeModal}>Cerrar</button>
           </div>
         </div>
       </dialog>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
-
+export default Navbar;
