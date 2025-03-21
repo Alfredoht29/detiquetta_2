@@ -143,10 +143,32 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div ref={menuRef} className="md:hidden bg-white shadow-md">
+        <div ref={menuRef} className="md:hidden bg-white shadow-md font-bold">
           <div className="px-2 pt-4 pb-3 space-y-1 sm:px-3">
             <Link href="/" className="block px-3 py-2 text-gray-700 hover:text-gray-900" onClick={() => setIsOpen(false)}>
               INICIO
+            </Link>
+            <Link
+              href="/menu"
+              className={
+                "block px-3 py-2 rounded-md text-base font-medium text-customred"
+              }
+              onClick={() => setIsOpen(false)}
+            >
+              <span className="countdown text-xl">
+                <span
+                  style={{ "--value": hours } as React.CSSProperties}
+                ></span>
+                h
+                <span
+                  style={{ "--value": minutes } as React.CSSProperties}
+                ></span>
+                m
+                <span
+                  style={{ "--value": seconds } as React.CSSProperties}
+                ></span>
+                s
+              </span>
             </Link>
             <Link href="/us" className="block px-3 py-2 text-gray-700 hover:text-gray-900" onClick={() => setIsOpen(false)}>
               NOSOTROS
