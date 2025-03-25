@@ -55,7 +55,7 @@ const Navbar = () => {
   }, [isOpen]);
 
   const { selectedLocation, setSelectedLocation } = useLocationStore();
-  const locations = ["Location 1", "Location 2", "Location 3"];
+  const locations = ["Veracruz", "Boca del rio", "Xalapa"];
 
   const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLocation(event.target.value);
