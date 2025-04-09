@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import useSavePromoStore from "../stores/savePromoStore";
 
 interface Promotion {
   id: number;
@@ -9,6 +10,9 @@ interface Promotion {
   infoPromo: string;
   expirationDate: string;
   urlPromotion?: string;
+  category: string;
+  dayOfWeek: string;
+  relevance: number;
 }
 
 const Page = () => {
@@ -16,8 +20,14 @@ const Page = () => {
   const [basePromotions, setBasePromotions] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPromo, setSelectedPromo] = useState<Promotion | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedDay, setSelectedDay] = useState<string>("");
   const containerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const savePromoStore = useSavePromoStore();
+
+  const categories = Array.from(new Set(basePromotions.map(promo => promo.category)));
+  const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
   useEffect(() => {
     const fetchPromotions = async () => {
@@ -41,6 +51,27 @@ const Page = () => {
 
     fetchPromotions();
   }, []);
+
+  useEffect(() => {
+    let filteredPromotions = [...basePromotions];
+
+    if (selectedCategory) {
+      filteredPromotions = filteredPromotions.filter(promo => promo.category === selectedCategory);
+    }
+
+    if (selectedDay) {
+      filteredPromotions = filteredPromotions.filter(promo => promo.dayOfWeek === selectedDay);
+    }
+
+    // Ordenar por relevancia
+    filteredPromotions.sort((a, b) => b.relevance - a.relevance);
+
+    setPromotions(filteredPromotions);
+  }, [selectedCategory, selectedDay, basePromotions]);
+
+  const handleSavePromo = (promoId: number) => {
+    savePromoStore.addPromoId(promoId);
+  };
 
   useEffect(() => {
     if (!sentinelRef.current || !containerRef.current) return;
@@ -96,6 +127,32 @@ const Page = () => {
         ) : (
           <div className="w-full p-2 px-8 ml-8">
             <h2 className="text-2xl font-bold mb-4">Promociones destacadas</h2>
+            
+            {/* Filtros */}
+            <div className="flex gap-4 mb-4">
+              <select 
+                className="select select-bordered w-full max-w-xs"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="">Todas las categorías</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+
+              <select 
+                className="select select-bordered w-full max-w-xs"
+                value={selectedDay}
+                onChange={(e) => setSelectedDay(e.target.value)}
+              >
+                <option value="">Todos los días</option>
+                {daysOfWeek.map((day) => (
+                  <option key={day} value={day}>{day}</option>
+                ))}
+              </select>
+            </div>
+
             <div
               ref={containerRef}
               className="h-[80vh] overflow-y-auto p-4 relative"
@@ -114,7 +171,6 @@ const Page = () => {
                     <div
                       key={promo.id}
                       className="relative flex flex-col w-64 h-64 rounded-lg border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl"
-                      onClick={() => setSelectedPromo(promo)}
                     >
                       <div className="relative w-full aspect-[16/9] bg-gray-100">
                         <img
@@ -125,12 +181,22 @@ const Page = () => {
                       </div>
                       <div className="flex flex-col justify-between flex-grow p-3">
                         <h3 className="font-extrabold text-md underline decoration-4 line-clamp-2">{promo.infoPromo}</h3>
-                        <button
-                          type="button"
-                          className="w-full px-3 py-2 bg-[#EE733B] text-white text-sm rounded hover:bg-[#ff6b25] transition-colors"
-                        >
-                          Ver detalle
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            className="w-full px-3 py-2 bg-[#EE733B] text-white text-sm rounded hover:bg-[#ff6b25] transition-colors"
+                            onClick={() => setSelectedPromo(promo)}
+                          >
+                            Ver detalle
+                          </button>
+                          <button
+                            type="button"
+                            className="px-3 py-2 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition-colors"
+                            onClick={() => handleSavePromo(promo.id)}
+                          >
+                            Guardar
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
