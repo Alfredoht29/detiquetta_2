@@ -33,12 +33,7 @@ const Page = () => {
     const fetchPromotions = async () => {
       try {
         const response = await axios.get<{ data: Promotion[] }>(
-          "http://209.38.139.117:1337/api/promotions",
-          {
-            headers: {
-              Authorization: `Bearer b5814fca6bbdb899336b91b85d9927604f4ada67c3ec0ebbc080221738e1581e10987c044a946d7a063a7307af2fdc221501a4e5a25c5c514e08062ea4e82f85e7b7b2c62837fd32900920bda548e9cde1a75f362bd4568de7c129a966547fc8fcd62ad25cf235042327df3969288505c7d620f3b2f43ac761f6937735954bc7`,
-            },
-          }
+          `${process.env.NEXT_PUBLIC_API_URL}/promotions`,
         );
         const data = response.data.data;
         setBasePromotions(data);
@@ -125,7 +120,7 @@ const Page = () => {
             </div>
           </div>
         ) : (
-          <div className="w-full p-2 px-8 ml-8">
+          <div className="w-full p-2 px-8 ml-4">
             <h2 className="text-2xl font-bold mb-4">Promociones destacadas</h2>
             
             {/* Filtros */}

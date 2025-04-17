@@ -157,17 +157,14 @@ const Navbar = () => {
             >
               <span className="countdown text-xl">
                 <span
-                  style={{ "--value": hours } as React.CSSProperties}
-                ></span>
-                h
+                  style={{ "--value": hours ,marginRight: "-0.3em" } as React.CSSProperties}
+                ></span>h
                 <span
                   style={{ "--value": minutes } as React.CSSProperties}
-                ></span>
-                m
+                ></span>m
                 <span
                   style={{ "--value": seconds } as React.CSSProperties}
-                ></span>
-                s
+                ></span>s
               </span>
             </Link>
             <Link href="/us" className="block px-3 py-2 text-gray-700 hover:text-gray-900" onClick={() => setIsOpen(false)}>
