@@ -1,4 +1,6 @@
-import { create } from 'zustand';
+"use client";
+
+import { create } from "zustand";
 
 interface PromoStore {
   promoIds: number[];
@@ -10,7 +12,7 @@ interface PromoStore {
 const useSavePromoStore = create<PromoStore>((set) => ({
   promoIds: [],
   addPromoId: (id) => {
-    console.log(`Adding promo ID: ${id}`); // Logs the promo ID when it's added
+    console.log(`Adding promo ID: ${id}`);
     set((state) => ({
       promoIds: [...state.promoIds, id],
     }));
