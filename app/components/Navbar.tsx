@@ -157,7 +157,7 @@ const Navbar = () => {
             >
               <span className="countdown text-xl">
                 <span
-                  style={{ "--value": hours ,marginRight: "-0.3em" } as React.CSSProperties}
+                  style={{ "--value": hours } as React.CSSProperties}
                 ></span>h
                 <span
                   style={{ "--value": minutes } as React.CSSProperties}

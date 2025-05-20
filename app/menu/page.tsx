@@ -1,10 +1,9 @@
-// app/page.tsx
-
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 import axios from "axios";
-import { Heart } from "lucide-react";
+import { CircleX, Heart, Store } from "lucide-react";
 import useSavePromoStore from "../stores/savePromoStore";
 
 interface Promotion {
@@ -14,6 +13,7 @@ interface Promotion {
   urlPromotion?: string;
   category: string;
   relevance: number;
+  restaurantId: string;
 }
 
 const daysOfWeek = [
@@ -43,7 +43,6 @@ const Page: React.FC = () => {
   const addPromoId    = useSavePromoStore((s) => s.addPromoId);
   const removePromoId = useSavePromoStore((s) => s.removePromoId);
 
-  // Fetch whenever the day changes
   useEffect(() => {
     const fetchPromos = async () => {
       setLoading(true);
@@ -52,21 +51,42 @@ const Page: React.FC = () => {
         if (selectedDay !== "") {
           params.weekDay = selectedDay;
         }
-        const resp = await axios.get<{ data: Promotion[] }>(
+        const resp = await axios.get<{
+          data: Array<{
+            id: number;
+            infoPromo: string;
+            expirationDate: string;
+            urlPromotion?: string;
+            Categoria: string;
+            relevance: number;
+            restaurant?: { documentId: string };
+          }>;
+        }>(
           `${process.env.NEXT_PUBLIC_API_URL}/promotions`,
           { params }
         );
-        setPromotions(resp.data.data);
+
+        const mapped: Promotion[] = resp.data.data.map((item) => ({
+          id: item.id,
+          infoPromo: item.infoPromo,
+          expirationDate: item.expirationDate,
+          urlPromotion: item.urlPromotion,
+          category: item.Categoria,
+          relevance: item.relevance,
+          restaurantId: item.restaurant?.documentId ?? "",
+        }));
+
+        setPromotions(mapped);
       } catch (err) {
         console.error("Error fetching promos:", err);
       } finally {
         setLoading(false);
       }
     };
+
     fetchPromos();
   }, [selectedDay]);
 
-  // Category filter + relevance sort
   const filtered = promotions
     .filter((p) => !selectedCategory || p.category === selectedCategory)
     .sort((a, b) => b.relevance - a.relevance);
@@ -77,37 +97,42 @@ const Page: React.FC = () => {
     <div className="h-full pb-4 overflow-y-auto no-scrollbar flex items-center justify-center">
       <div className="w-screen">
         {selectedPromo ? (
-          /* Detail view */
           <div className="landscape:w-1/2 landscape:mx-auto landscape:mt-20 flex flex-col md:flex-row items-center p-4 border rounded-lg shadow-lg">
             <img
               src={selectedPromo.urlPromotion}
               alt="Promo"
               className="w-80 h-80 object-cover rounded-lg"
             />
-            <div className="ml-6 text-left">
-              <h2 className="text-2xl font-bold">{selectedPromo.infoPromo}</h2>
-              <p className="text-gray-600 mt-2">
-                Expira: {selectedPromo.expirationDate}
-              </p>
-              <button
-                className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-                onClick={() => setSelectedPromo(null)}
-              >
-                Cerrar
-              </button>
+            <div className="p-6 border rounded-lg shadow-sm">
+              <div className="ml-6 text-left">
+                <h2 className="text-2xl font-bold">{selectedPromo.infoPromo}</h2>
+                <p className="text-gray-600 mt-2">
+  Expira: {new Date(selectedPromo.expirationDate).toLocaleDateString('es-ES')}
+</p>
+
+                <div className="flex space-x-4 mt-4">
+                  <button
+                    className="bg-red-500 text-white w-14 h-14 rounded-full flex items-center justify-center"
+                    onClick={() => setSelectedPromo(null)}
+                  >
+                    <CircleX className="w-7 h-7" />
+                  </button>
+                  <Link href={`/restaurant/${selectedPromo.restaurantId}`}>
+                    <button className="bg-[#EE733B] text-white w-14 h-14 rounded-full flex items-center justify-center">
+                      <Store className="w-7 h-7" />
+                    </button>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         ) : (
-          /* List + filters */
           <div className="w-full p-2 px-8 ml-4">
             <h2 className="text-2xl font-bold mb-4">
               Promociones destacadas
             </h2>
-
-            {/* Filters */}
             <div className="flex gap-4 mb-4">
-              {/* Category */}
-              <select
+              {/* <select
                 className="select select-bordered w-full max-w-xs"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -118,9 +143,7 @@ const Page: React.FC = () => {
                     {cat}
                   </option>
                 ))}
-              </select>
-
-              {/* Day */}
+              </select> */}
               <select
                 className="select select-bordered w-full max-w-xs"
                 value={selectedDay}
@@ -133,13 +156,11 @@ const Page: React.FC = () => {
                 ))}
               </select>
             </div>
-
             <div
               ref={containerRef}
               className="h-[80vh] overflow-y-auto p-4 relative"
             >
               {loading ? (
-                /* Skeleton placeholders */
                 <div className="grid portrait:grid-cols-1 landscape:grid-cols-4 gap-4">
                   {Array.from({ length: 8 }).map((_, i) => (
                     <div
@@ -149,7 +170,6 @@ const Page: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                /* Promo grid */
                 <div className="grid portrait:grid-cols-1 landscape:grid-cols-4 mx-auto gap-4">
                   {filtered.map((promo) => {
                     const saved = promoIds.includes(promo.id);
@@ -199,11 +219,9 @@ const Page: React.FC = () => {
                       </div>
                     );
                   })}
-
-                  {/* When promotions is empty, you’ll see nothing here */}
+                  <div ref={sentinelRef} className="h-8" />
                 </div>
               )}
-              <div ref={sentinelRef} className="h-8" />
             </div>
           </div>
         )}

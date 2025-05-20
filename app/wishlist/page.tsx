@@ -1,188 +1,185 @@
 "use client";
-import React from "react";
 
-const page = () => {
-  const data = [
-    {
-      producto: "Pizza Margherita",
-      restaurante: "Luigi's Italian Kitchen",
-      precio: "$12.99",
-      descuento: "10%",
-      avatar:
-        "https://web.didiglobal.com/_next/image/?url=https%3A%2F%2Fimages.ctfassets.net%2Fn7hs0hadu6ro%2F1O0Be1dObiQBm17GQJHLj8%2F3fde720730f0b3616ecf5a82b928e7f9%2Fpizza-a-domicilio-cerca-de-mi.jpg&w=828&q=75",
-    },
-    {
-      producto: "Sushi Platter",
-      restaurante: "Tokyo Delights",
-      precio: "$22.50",
-      descuento: "15%",
-      avatar:
-        "https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/0749D9BC-260D-40F4-A07F-54814C4A82B4/Derivates/A73A7793-F3EE-4B90-ABA4-1CC1A0C3E18F.jpg",
-    },
-    {
-      producto: "Tacos al Pastor",
-      restaurante: "El Gusto Mexicano",
-      precio: "$8.99",
-      descuento: "5%",
-      avatar:
-        "https://comedera.com/wp-content/uploads/sites/9/2017/08/tacos-al-pastor-receta.jpg",
-    },
-    {
-      producto: "Cheeseburger",
-      restaurante: "American Grill",
-      precio: "$9.49",
-      descuento: "No discount",
-      avatar:
-        "https://www.sargento.com/assets/Uploads/Recipe/Image/burger_0__FillWzExNzAsNTgzXQ.jpg",
-    },
-  ];
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import useSavePromoStore from "../stores/savePromoStore";
 
-  const parsePrice = (priceStr: string) =>
-    parseFloat(priceStr.replace("$", ""));
-  const parseDiscount = (discountStr: string) => {
-    if (discountStr.endsWith("%")) {
-      return parseFloat(discountStr.replace("%", "")) / 100;
-    }
-    return 0;
+interface Promotion {
+  id: number;
+  documentId: string;
+  idPromotion: string;
+  infoPromo: string;
+  weekDay: number;
+  relevance: number;
+  codeCity: number;
+  expirationDate: string;
+  urlPromotion?: string;
+  Categoria: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  restaurant: {
+    id: number;
+    documentId: string;
+  };
+}
+
+export default function SavedPromos() {
+  const promoIds = useSavePromoStore((s) => s.promoIds);
+  const removePromoId = useSavePromoStore((s) => s.removePromoId);
+  const [promos, setPromos] = useState<Promotion[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [expanded, setExpanded] = useState<Record<number, boolean>>({});
+
+  useEffect(() => {
+    const fetchSavedPromos = async () => {
+      if (!promoIds.length) {
+        setPromos([]);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const savedIds = promoIds.join(",");
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/promotions?savedIds=${savedIds}`;
+        const res = await axios.get(url);
+
+        const mapped: Promotion[] = res.data.data.map((item: any) => ({
+          id: item.id,
+          documentId: item.documentId,
+          idPromotion: item.idPromotion,
+          infoPromo: item.infoPromo,
+          weekDay: item.weekDay,
+          relevance: item.relevance,
+          codeCity: item.codeCity,
+          expirationDate: item.expirationDate,
+          urlPromotion: item.urlPromotion,
+          Categoria: item.Categoria,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt,
+          publishedAt: item.publishedAt,
+          restaurant: {
+            id: item.restaurant?.id ?? 0,
+            documentId: item.restaurant?.documentId ?? "sin-id",
+          },
+        }));
+
+        setPromos(mapped);
+      } catch (err) {
+        console.error("Error fetching saved promos", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSavedPromos();
+  }, [promoIds]);
+
+  const toggleExpanded = (id: number) => {
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const totalOriginalPrice = data.reduce(
-    (acc, item) => acc + parsePrice(item.precio),
-    0
-  );
-
-  const totalDiscount = data.reduce((acc, item) => {
-    const discountRate = parseDiscount(item.descuento);
-    return acc + parsePrice(item.precio) * discountRate;
-  }, 0);
-
-  const totalFinalPrice = totalOriginalPrice - totalDiscount;
+  const removeItem = (id: number) => {
+    removePromoId(id);
+    setPromos((prev) => prev.filter((promo) => promo.id !== id));
+  };
 
   return (
-    <>
-      <button
-        className="btn btn-block bg-customOrange text-white"
-        onClick={() =>
-          (
-            document.getElementById("my_modal_4") as HTMLDialogElement
-          ).showModal()
-        }
-      >
-        ORDEN
-      </button>
+    <div className="w-full max-w-4xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-6">Promos Guardadas</h1>
 
-      <dialog id="my_modal_4" className="modal">
-        <div className="modal-box">
-          <div className="mx-auto font-bold">
-            <h1 className="text-2xl text-center">TU ORDEN</h1>
-            <br />
-            {/* List of Products in Summary */}
-            {data.map((item, index) => (
-              <div key={index}>
-                <div className="flex justify-between">
-                  <span>{item.producto}</span>
-                  <span>
-                    ${parsePrice(item.precio).toFixed(2)}
-                    {item.descuento !== "No discount" && (
-                      <span className="text-sm text-gray-500">
-                        {" "}
-                        (-{item.descuento})
-                      </span>
-                    )}
-                  </span>
-                </div>
-                <hr className="border-b border-black" />
-              </div>
-            ))}
+      {loading && <p>Cargando...</p>}
 
-            {/* Totals */}
-            <div className="flex justify-between text-customor">
-              <span>TOTAL</span> <span>${totalOriginalPrice.toFixed(2)}</span>
-            </div>
-            <hr className="border-b border-black" />
-            <div className="flex justify-between text-customor">
-              <span>TE AHORRASTE</span> <span>${totalDiscount.toFixed(2)}</span>
-            </div>
-            <hr className="border-b border-black" />
-            <div className="flex justify-between text-customor">
-              <span>TOTAL A PAGAR</span>{" "}
-              <span>${totalFinalPrice.toFixed(2)}</span>
-            </div>
-            <hr className="border-b border-black" />
-            <br />
-          </div>
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn">Cerrar</button>
-            </form>
-          </div>
-        </div>
-      </dialog>
+      {!loading && promos.length === 0 && (
+        <p className="text-gray-500">No hay promociones guardadas.</p>
+      )}
 
-      <div className="overflow-x-auto landscape:block hidden">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Restaurante</th>
-              <th>Precio</th>
-              <th>Descuento</th>
-              <th>Remover</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle h-24 w-24">
+      {!loading && promos.length > 0 && (
+        <>
+          {/* Landscape - table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr className="border-b border-black">
+                  <th>Imagen</th>
+                  <th>Promoción</th>
+                  <th>Expira</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {promos.map((promo) => (
+                  <tr key={promo.id} className="border-b border-black">
+                    <td>
+                      <div className="w-20 h-20 rounded">
                         <img
-                          src={item.avatar}
-                          alt={`Image of ${item.producto}`}
+                          src={promo.urlPromotion || "/placeholder.svg"}
+                          alt={promo.infoPromo}
+                          className="w-20 h-20 object-cover rounded"
                         />
                       </div>
-                    </div>
-                    <span className="text-lg font-bold">{item.producto}</span>
-                  </div>
-                </td>
-                <td>{item.restaurante}</td>
-                <td>{item.precio}</td>
-                <td>{item.descuento}</td>
-                <td>
-                  <button className="btn btn-circle btn-error btn-sm">X</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="portrait:block hidden">
-        {data.map((item, index) => (
-          <details key={index} className="collapse collapse-arrow">
-            <summary className="collapse-title text-xl font-medium">
-              {item.producto}
-            </summary>
-            <div className="collapse-content">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="avatar">
-                  <div className="mask mask-squircle h-12 w-12">
-                    <img src={item.avatar} alt={`Image of ${item.producto}`} />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm font-bold">{item.restaurante}</p>
-                  <p className="text-sm">Precio: {item.precio}</p>
-                  <p className="text-sm">Descuento: {item.descuento}</p>
-                </div>
-                <button className="btn btn-circle btn-error btn-sm">X</button>
-              </div>
-            </div>
-          </details>
-        ))}
-      </div>
-    </>
-  );
-};
+                    </td>
+                    <td>{promo.infoPromo}</td>
+                    <td>
+                      {new Date(promo.expirationDate).toLocaleDateString("es-ES")}
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => removeItem(promo.id)}
+                        className="btn btn-ghost btn-sm text-customOrange"
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-export default page;
+          {/* Portrait - collapsible cards */}
+          <div className="md:hidden space-y-3">
+            {promos.map((promo) => (
+              <div
+                key={promo.id}
+                className="collapse collapse-arrow bg-base-100 border border-black rounded-lg"
+              >
+                <input
+                  type="checkbox"
+                  checked={expanded[promo.id] || false}
+                  onChange={() => toggleExpanded(promo.id)}
+                  className="min-h-0"
+                />
+                <div className="collapse-title p-4 flex items-center gap-4">
+                  <img
+                    src={promo.urlPromotion || "/placeholder.svg"}
+                    alt={promo.infoPromo}
+                    className="w-20 h-20 object-cover rounded"
+                  />
+                  <div>
+                    <h3 className="font-medium">{promo.infoPromo}</h3>
+                    <p className="text-sm">
+                      Expira:{" "}
+                      {new Date(promo.expirationDate).toLocaleDateString("es-ES")}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="collapse-content px-4 pb-4">
+                  <div className="flex justify-end mt-3">
+                    <button
+                      onClick={() => removeItem(promo.id)}
+                      className="btn btn-outline btn-sm text-customOrange border-customOrange hover:bg-customOrange hover:text-white"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
