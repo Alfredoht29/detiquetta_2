@@ -5,43 +5,39 @@ import Link from "next/link";
 import axios from "axios";
 import { CircleX, Heart, Store } from "lucide-react";
 import useSavePromoStore from "../stores/savePromoStore";
-
-interface Promotion {
-  id: number;
-  infoPromo: string;
-  expirationDate: string;
-  urlPromotion?: string;
-  category: string;
-  relevance: number;
-  restaurantId: string;
-}
+import { Promotion } from "../interfaces/promotion";
 
 const daysOfWeek = [
   { label: "Todos los días", value: "" },
-  { label: "Domingo",    value: "0" },
-  { label: "Lunes",      value: "1" },
-  { label: "Martes",     value: "2" },
-  { label: "Miércoles",  value: "3" },
-  { label: "Jueves",     value: "4" },
-  { label: "Viernes",    value: "5" },
-  { label: "Sábado",     value: "6" },
+  { label: "Domingo", value: "0" },
+  { label: "Lunes", value: "1" },
+  { label: "Martes", value: "2" },
+  { label: "Miércoles", value: "3" },
+  { label: "Jueves", value: "4" },
+  { label: "Viernes", value: "5" },
+  { label: "Sábado", value: "6" },
 ];
 
 const Page: React.FC = () => {
-  const [promotions, setPromotions]             = useState<Promotion[]>([]);
-  const [loading, setLoading]                   = useState(true);
-  const [selectedPromo, setSelectedPromo]       = useState<Promotion | null>(null);
+  const [promotions, setPromotions] = useState<Promotion[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedPromo, setSelectedPromo] = useState<Promotion | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedDay, setSelectedDay]           = useState(
+  const [selectedDay, setSelectedDay] = useState(
     new Date().getDay().toString()
   );
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const sentinelRef  = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const promoIds      = useSavePromoStore((s) => s.promoIds);
-  const addPromoId    = useSavePromoStore((s) => s.addPromoId);
+  const promoIds = useSavePromoStore((s) => s.promoIds);
+  const addPromoId = useSavePromoStore((s) => s.addPromoId);
   const removePromoId = useSavePromoStore((s) => s.removePromoId);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
 
   useEffect(() => {
     const fetchPromos = async () => {
@@ -107,8 +103,8 @@ const Page: React.FC = () => {
               <div className="ml-6 text-left">
                 <h2 className="text-2xl font-bold">{selectedPromo.infoPromo}</h2>
                 <p className="text-gray-600 mt-2">
-  Expira: {new Date(selectedPromo.expirationDate).toLocaleDateString('es-ES')}
-</p>
+                  Expira: {new Date(selectedPromo.expirationDate).toLocaleDateString('es-ES')}
+                </p>
 
                 <div className="flex space-x-4 mt-4">
                   <button
@@ -206,11 +202,10 @@ const Page: React.FC = () => {
                               aria-label={saved ? "Guardado" : "Guardar"}
                             >
                               <Heart
-                                className={`w-6 h-6 stroke-black ${
-                                  saved
+                                className={`w-6 h-6 stroke-black ${saved
                                     ? "fill-[#EE733B] animate-heartbeat"
                                     : "fill-none hover:fill-[#EE733B]/20"
-                                }`}
+                                  }`}
                                 strokeWidth={1.5}
                               />
                             </button>

@@ -27,6 +27,7 @@ interface Promotion {
 export default function SavedPromos() {
   const promoIds = useSavePromoStore((s) => s.promoIds);
   const removePromoId = useSavePromoStore((s) => s.removePromoId);
+
   const [promos, setPromos] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
@@ -80,8 +81,8 @@ export default function SavedPromos() {
   };
 
   const removeItem = (id: number) => {
-    removePromoId(id);
-    setPromos((prev) => prev.filter((promo) => promo.id !== id));
+    removePromoId(id); // Remove from Zustand
+    setPromos((prev) => prev.filter((promo) => promo.id !== id)); // Remove from local state
   };
 
   return (
@@ -120,9 +121,7 @@ export default function SavedPromos() {
                       </div>
                     </td>
                     <td>{promo.infoPromo}</td>
-                    <td>
-                      {new Date(promo.expirationDate).toLocaleDateString("es-ES")}
-                    </td>
+                    <td>{new Date(promo.expirationDate).toLocaleDateString("es-ES")}</td>
                     <td>
                       <button
                         onClick={() => removeItem(promo.id)}
@@ -159,8 +158,7 @@ export default function SavedPromos() {
                   <div>
                     <h3 className="font-medium">{promo.infoPromo}</h3>
                     <p className="text-sm">
-                      Expira:{" "}
-                      {new Date(promo.expirationDate).toLocaleDateString("es-ES")}
+                      Expira: {new Date(promo.expirationDate).toLocaleDateString("es-ES")}
                     </p>
                   </div>
                 </div>
