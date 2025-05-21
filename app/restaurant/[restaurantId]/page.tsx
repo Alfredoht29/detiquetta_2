@@ -13,7 +13,7 @@ export default function RestaurantProfile() {
 
     const fetchRestaurant = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${restaurantId}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/restaurants/${restaurantId}`);
         const data = await res.json();
         setRestaurant(data.data);
       } catch (error) {
