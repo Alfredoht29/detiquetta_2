@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useLocationStore } from "../app/stores/useLocationStore";
 import useSavePromoStore from "./stores/savePromoStore";
 import { Promotion } from "./interfaces/promotion";
+import { Location } from "./interfaces/location";
 
 export default function Home() {
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
@@ -20,21 +21,35 @@ export default function Home() {
 
   useEffect(() => {
     const fetchPromotions = async () => {
+      if (!selectedLocation) return;
+
       setLoading(true);
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/promotions`);
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/promotions`, {
+          params: {
+            codeCity: selectedLocation.codecity,
+          },
+        });
 
         const mappedPromos: Promotion[] = res.data.data
           .filter((item: any) => item.relevance === 1)
           .map((item: any) => ({
             id: item.id,
+            documentId: item.documentId,
+            idPromotion: item.idPromotion,
             infoPromo: item.infoPromo,
+            weekDay: item.weekDay,
+            relevance: item.relevance,
+            codeCity: item.codeCity,
             expirationDate: item.expirationDate,
             urlPromotion: item.urlPromotion,
-            category: item.Categoria,
-            relevance: item.relevance,
-            restaurantId: item.restaurant?.documentId ?? "",
+            Categoria: item.Categoria,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
+            publishedAt: item.publishedAt,
+            restaurant: item.restaurant ?? { id: 0, documentId: "", nombre: "" },
           }));
+
 
         setPromotions(mappedPromos);
       } catch (err) {
@@ -45,8 +60,7 @@ export default function Home() {
     };
 
     fetchPromotions();
-  }, []);
-
+  }, [selectedLocation]);
 
   if (selectedPromo) {
     return (
@@ -72,7 +86,7 @@ export default function Home() {
                   >
                     <CircleX className="w-7 h-7" />
                   </button>
-                  <Link href={`/restaurant/${selectedPromo.restaurantId}`}>
+                  <Link href={`/restaurant/${selectedPromo.restaurant.documentId}`}>
                     <button className="bg-[#EE733B] text-white w-14 h-14 rounded-full flex items-center justify-center">
                       <Store className="w-7 h-7" />
                     </button>
@@ -93,7 +107,9 @@ export default function Home() {
           <div className="hero-content text-center max-w-4xl mx-auto">
             <div className="text-center max-w-4xl mx-auto">
               <h1 className="text-5xl font-bold">
-                {selectedLocation ? `${selectedLocation}` : "¡Bienvenido!"}
+                {selectedLocation
+                  ? `Promociones en ${selectedLocation.name}`
+                  : "¡Bienvenido!"}
               </h1>
               <p className="py-6 text-3xl">
                 Las mejores promociones en la mejor aplicación
@@ -168,7 +184,6 @@ export default function Home() {
                               strokeWidth={1.5}
                             />
                           </button>
-
                         </div>
                       </div>
                     </div>

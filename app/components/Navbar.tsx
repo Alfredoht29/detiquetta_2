@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import { usePathname } from "next/navigation";
 import { useLocationStore } from "../stores/useLocationStore";
+import { Location } from '../interfaces/location'
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -35,7 +36,39 @@ const Navbar = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Close menu when clicking outside (except modal)
+  const { selectedLocation, setSelectedLocation, locations } = useLocationStore();
+
+  const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = locations.find(loc => loc.id === parseInt(event.target.value, 10));
+    if (selected) {
+      setSelectedLocation(selected);
+    }
+  };
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cities`);
+        const result = await res.json();
+
+        if (Array.isArray(result.data)) {
+          useLocationStore.getState().setLocations(result.data);
+
+          const defaultLocation = result.data.find((loc:Location) => loc.codecity === 1);
+          if (defaultLocation) {
+            useLocationStore.getState().setSelectedLocation(defaultLocation);
+          } else if (result.data.length > 0) {
+            useLocationStore.getState().setSelectedLocation(result.data[0]);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch locations:", error);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as HTMLElement;
@@ -54,12 +87,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-  const { selectedLocation, setSelectedLocation } = useLocationStore();
-  const locations = ["Veracruz", "Boca del rio", "Xalapa"];
-
-  const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLocation(event.target.value);
-  };
 
   const openModal = () => {
     if (modalRef.current) {
@@ -187,11 +214,15 @@ const Navbar = () => {
       <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Selecciona tu ciudad</h3>
-          <select value={selectedLocation} onChange={handleLocationChange} className="select select-warning w-full max-w-xs">
+          <select
+            value={selectedLocation?.id ?? ""}
+            onChange={handleLocationChange}
+            className="select select-warning w-full max-w-xs"
+          >
             <option value="" disabled>UBICACION</option>
             {locations.map((location) => (
-              <option key={location} value={location}>
-                {location}
+              <option key={location.id} value={location.id}>
+                {location.name}
               </option>
             ))}
           </select>

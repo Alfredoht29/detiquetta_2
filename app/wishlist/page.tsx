@@ -21,6 +21,7 @@ interface Promotion {
   restaurant: {
     id: number;
     documentId: string;
+    nombre:string;
   };
 }
 
@@ -62,6 +63,7 @@ export default function SavedPromos() {
           restaurant: {
             id: item.restaurant?.id ?? 0,
             documentId: item.restaurant?.documentId ?? "sin-id",
+            nombre:item.restaurant?.nombre ?? "sin-nombre",
           },
         }));
 
@@ -104,6 +106,7 @@ export default function SavedPromos() {
                 <tr className="border-b border-black">
                   <th>Imagen</th>
                   <th>Promoción</th>
+                  <th>Restaurante</th>
                   <th>Expira</th>
                   <th>Acción</th>
                 </tr>
@@ -121,6 +124,7 @@ export default function SavedPromos() {
                       </div>
                     </td>
                     <td>{promo.infoPromo}</td>
+                    <td>{promo.restaurant.nombre}</td>
                     <td>{new Date(promo.expirationDate).toLocaleDateString("es-ES")}</td>
                     <td>
                       <button

@@ -1,11 +1,16 @@
 import { create } from 'zustand';
+import { Location } from '../interfaces/location'
 
 interface LocationStore {
-  selectedLocation: string;
-  setSelectedLocation: (location: string) => void;
+  selectedLocation: Location | null;
+  setSelectedLocation: (location: Location) => void;
+  locations: Location[];
+  setLocations: (locations: Location[]) => void;
 }
 
 export const useLocationStore = create<LocationStore>((set) => ({
-  selectedLocation: 'Veracruz Ver', // Default value
+  selectedLocation: null,
   setSelectedLocation: (location) => set({ selectedLocation: location }),
+  locations: [],
+  setLocations: (locations) => set({ locations }),
 }));

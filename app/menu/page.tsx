@@ -5,6 +5,7 @@ import Link from "next/link";
 import axios from "axios";
 import { CircleX, Heart, Store } from "lucide-react";
 import useSavePromoStore from "../stores/savePromoStore";
+import { useLocationStore } from "../stores/useLocationStore";
 import { Promotion } from "../interfaces/promotion";
 
 const daysOfWeek = [
@@ -19,6 +20,7 @@ const daysOfWeek = [
 ];
 
 const Page: React.FC = () => {
+  const selectedLocation = useLocationStore((state) => state.selectedLocation);
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPromo, setSelectedPromo] = useState<Promotion | null>(null);
@@ -38,39 +40,40 @@ const Page: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
-
   useEffect(() => {
     const fetchPromos = async () => {
+      if (!selectedLocation) return;
+
       setLoading(true);
       try {
-        const params: Record<string, string> = {};
+        const params: Record<string, string> = {
+          codeCity: selectedLocation.codecity.toString(),
+        };
+
         if (selectedDay !== "") {
           params.weekDay = selectedDay;
         }
-        const resp = await axios.get<{
-          data: Array<{
-            id: number;
-            infoPromo: string;
-            expirationDate: string;
-            urlPromotion?: string;
-            Categoria: string;
-            relevance: number;
-            restaurant?: { documentId: string };
-          }>;
-        }>(
-          `${process.env.NEXT_PUBLIC_API_URL}/promotions`,
-          { params }
-        );
 
-        const mapped: Promotion[] = resp.data.data.map((item) => ({
-          id: item.id,
-          infoPromo: item.infoPromo,
-          expirationDate: item.expirationDate,
-          urlPromotion: item.urlPromotion,
-          category: item.Categoria,
-          relevance: item.relevance,
-          restaurantId: item.restaurant?.documentId ?? "",
-        }));
+        const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/promotions`, { params });
+
+        const mapped: Promotion[] = resp.data.data
+          .filter((item: any) => item.relevance === 1)
+          .map((item: any) => ({
+            id: item.id,
+            documentId: item.documentId,
+            idPromotion: item.idPromotion,
+            infoPromo: item.infoPromo,
+            weekDay: item.weekDay,
+            relevance: item.relevance,
+            codeCity: item.codeCity,
+            expirationDate: item.expirationDate,
+            urlPromotion: item.urlPromotion,
+            Categoria: item.Categoria,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
+            publishedAt: item.publishedAt,
+            restaurant: item.restaurant ?? { id: 0, documentId: "", nombre: "" },
+          }));
 
         setPromotions(mapped);
       } catch (err) {
@@ -81,13 +84,13 @@ const Page: React.FC = () => {
     };
 
     fetchPromos();
-  }, [selectedDay]);
+  }, [selectedDay, selectedLocation]);
 
   const filtered = promotions
-    .filter((p) => !selectedCategory || p.category === selectedCategory)
+    .filter((p) => !selectedCategory || p.Categoria === selectedCategory)
     .sort((a, b) => b.relevance - a.relevance);
 
-  const categories = Array.from(new Set(promotions.map((p) => p.category)));
+  const categories = Array.from(new Set(promotions.map((p) => p.Categoria)));
 
   return (
     <div className="h-full pb-4 overflow-y-auto no-scrollbar flex items-center justify-center">
@@ -103,9 +106,8 @@ const Page: React.FC = () => {
               <div className="ml-6 text-left">
                 <h2 className="text-2xl font-bold">{selectedPromo.infoPromo}</h2>
                 <p className="text-gray-600 mt-2">
-                  Expira: {new Date(selectedPromo.expirationDate).toLocaleDateString('es-ES')}
+                  Expira: {new Date(selectedPromo.expirationDate).toLocaleDateString("es-ES")}
                 </p>
-
                 <div className="flex space-x-4 mt-4">
                   <button
                     className="bg-red-500 text-white w-14 h-14 rounded-full flex items-center justify-center"
@@ -113,7 +115,7 @@ const Page: React.FC = () => {
                   >
                     <CircleX className="w-7 h-7" />
                   </button>
-                  <Link href={`/restaurant/${selectedPromo.restaurantId}`}>
+                  <Link href={`/restaurant/${selectedPromo.restaurant.documentId}`}>
                     <button className="bg-[#EE733B] text-white w-14 h-14 rounded-full flex items-center justify-center">
                       <Store className="w-7 h-7" />
                     </button>
@@ -124,10 +126,9 @@ const Page: React.FC = () => {
           </div>
         ) : (
           <div className="w-full p-2 px-8 ml-4">
-            <h2 className="text-2xl font-bold mb-4">
-              Promociones destacadas
-            </h2>
+            <h2 className="text-2xl font-bold mb-4">Promociones destacadas</h2>
             <div className="flex gap-4 mb-4">
+              {/* Optional category selector */}
               {/* <select
                 className="select select-bordered w-full max-w-xs"
                 value={selectedCategory}
@@ -203,9 +204,9 @@ const Page: React.FC = () => {
                             >
                               <Heart
                                 className={`w-6 h-6 stroke-black ${saved
-                                    ? "fill-[#EE733B] animate-heartbeat"
-                                    : "fill-none hover:fill-[#EE733B]/20"
-                                  }`}
+                                  ? "fill-[#EE733B] animate-heartbeat"
+                                  : "fill-none hover:fill-[#EE733B]/20"
+                                }`}
                                 strokeWidth={1.5}
                               />
                             </button>
