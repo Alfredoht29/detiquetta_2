@@ -3,27 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import useSavePromoStore from "../stores/savePromoStore";
-
-interface Promotion {
-  id: number;
-  documentId: string;
-  idPromotion: string;
-  infoPromo: string;
-  weekDay: number;
-  relevance: number;
-  codeCity: number;
-  expirationDate: string;
-  urlPromotion?: string;
-  Categoria: string;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt: string;
-  restaurant: {
-    id: number;
-    documentId: string;
-    nombre:string;
-  };
-}
+import { Promotion } from "../interfaces/promotion";
 
 export default function SavedPromos() {
   const promoIds = useSavePromoStore((s) => s.promoIds);
@@ -161,6 +141,7 @@ export default function SavedPromos() {
                   />
                   <div>
                     <h3 className="font-medium">{promo.infoPromo}</h3>
+                    <h3 className="font-medium">{promo.restaurant.nombre}</h3>
                     <p className="text-sm">
                       Expira: {new Date(promo.expirationDate).toLocaleDateString("es-ES")}
                     </p>
