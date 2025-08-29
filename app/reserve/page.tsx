@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import DateInput from "../components/DateInput";
 import TimeInput from "../components/TimeInput";
 import styles from "../styles/reserve.module.css";
+import Swal from 'sweetalert2';
 import { isMobileSafari } from "../utils/browserDetection";
 import { useLocationStore } from "../stores/useLocationStore";
 
@@ -61,15 +62,18 @@ export default function Reserve() {
     const payload = {
       To: selectedRestaurant,
       ContentVariables: JSON.stringify({
-      "1": formattedDate,
-      "2": formattedTime,
-      "3": name.toUpperCase(),
-      "4": String(numPeople),
-    }),
+        "1": formattedDate,
+        "2": formattedTime,
+        "3": name.toUpperCase(),
+        "4": String(numPeople),
+      }),
     };
 
     console.log("Reservation JSON:", payload);
-
+    Swal.fire({
+      title: "Tu reservacion ha sido enviada",
+      icon: "success"
+    });
 
     fetch(`${process.env.NEXT_PUBLIC_N8N_WEBHOOK_RESERVATION_URL}`, {
       method: "POST",
@@ -82,6 +86,7 @@ export default function Reserve() {
   };
 
   return (
+
     <div className={styles.backgroundContainer}>
       <div className={`${styles.overlayContent} space-y-4`}>
         <h2 className="text-2xl font-bold mb-4">Reserva tu mesa</h2>
