@@ -130,6 +130,7 @@ export default function Home() {
       <div id="slide2" className="carousel-item w-full">
         <div className="h-full mx-auto overflow-y-auto no-scrollbar flex items-center justify-center">
           <div className="max-h-full p-4">
+                             <h2 className="text-2xl font-bold mb-4">Promociones Destacadas</h2>
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 place-items-center">
                 {Array(6)
@@ -157,7 +158,7 @@ export default function Home() {
                         />
                       </div>
                       <div className="flex flex-col justify-between flex-grow p-3">
-                        <h3 className="font-extrabold text-md underline decoration-4 line-clamp-2">
+                        <h3 className="font-extrabold text-md">
                           {promo.infoPromo}
                         </h3>
                         <div className="flex gap-2">

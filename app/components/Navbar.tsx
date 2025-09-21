@@ -213,7 +213,7 @@ const Navbar = () => {
       {/* Ubicación Modal */}
       <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Selecciona tu ciudad</h3>
+          <h3 className="font-bold text-lg">SELECCIONA TU CIUDAD</h3>
           <select
             value={selectedLocation?.id ?? ""}
             onChange={handleLocationChange}

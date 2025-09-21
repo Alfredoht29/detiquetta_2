@@ -69,7 +69,7 @@ export default function SavedPromos() {
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Promos Guardadas</h1>
+      <h1 className="text-2xl font-bold mb-6">LISTA DE DESEOS</h1>
 
       {loading && <p>Cargando...</p>}
 

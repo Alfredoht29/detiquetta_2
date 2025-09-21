@@ -126,7 +126,7 @@ const Page: React.FC = () => {
           </div>
         ) : (
           <div className="w-full p-2 px-8 ml-4">
-            <h2 className="text-2xl font-bold mb-4">Promociones destacadas</h2>
+            <h2 className="text-2xl font-bold mb-4">Promociones</h2>
             <div className="flex gap-4 mb-4">
               {/* Optional category selector */}
               {/* <select
@@ -183,7 +183,7 @@ const Page: React.FC = () => {
                           />
                         </div>
                         <div className="flex flex-col justify-between flex-grow p-3">
-                          <h3 className="font-extrabold text-md underline decoration-4 line-clamp-2">
+                          <h3 className="font-extrabold text-md decoration-4 line-clamp-2">
                             {promo.infoPromo}
                           </h3>
                           <div className="flex gap-2">
