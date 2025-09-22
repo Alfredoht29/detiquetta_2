@@ -7,6 +7,7 @@ import { CircleX, Heart, Store } from "lucide-react";
 import useSavePromoStore from "../stores/savePromoStore";
 import { useLocationStore } from "../stores/useLocationStore";
 import { Promotion } from "../interfaces/promotion";
+import Wish from "../components/Wish";
 
 const daysOfWeek = [
   { label: "Todos los días", value: "" },
@@ -167,15 +168,15 @@ const Page: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <div className="grid portrait:grid-cols-1 landscape:grid-cols-4 mx-auto gap-4">
+                <div className="grid portrait:grid-cols-1 landscape:grid-cols-4 mx-auto gap-4 place-items-center">
                   {filtered.map((promo) => {
                     const saved = promoIds.includes(promo.id);
                     return (
                       <div
                         key={promo.id}
-                        className="relative flex flex-col w-64 h-64 rounded-lg border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl"
+                        className="relative flex flex-col rounded-lg border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl"
                       >
-                        <div className="relative w-full aspect-[16/9] bg-gray-100">
+                        <div className="relative w-full aspect-[4/5] bg-gray-100">
                           <img
                             src={promo.urlPromotion || "/placeholder.svg"}
                             alt={promo.infoPromo}
@@ -202,13 +203,7 @@ const Page: React.FC = () => {
                               }
                               aria-label={saved ? "Guardado" : "Guardar"}
                             >
-                              <Heart
-                                className={`w-6 h-6 stroke-black ${saved
-                                  ? "fill-[#EE733B] animate-heartbeat"
-                                  : "fill-none hover:fill-[#EE733B]/20"
-                                }`}
-                                strokeWidth={1.5}
-                              />
+                               <Wish saved={saved} />
                             </button>
                           </div>
                         </div>

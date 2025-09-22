@@ -8,6 +8,7 @@ import { useLocationStore } from "../app/stores/useLocationStore";
 import useSavePromoStore from "./stores/savePromoStore";
 import { Promotion } from "./interfaces/promotion";
 import { Location } from "./interfaces/location";
+import Wish from "./components/Wish";
 
 export default function Home() {
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
@@ -148,9 +149,9 @@ export default function Home() {
                   return (
                     <div
                       key={promo.id}
-                      className="relative flex flex-col w-64 h-64 rounded-lg border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl"
+                      className="relative flex flex-col rounded-lg border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl"
                     >
-                      <div className="relative w-full aspect-[16/9] bg-gray-100">
+                      <div className="relative w-full aspect-[4/5] bg-gray-100">
                         <img
                           src={promo.urlPromotion || "/placeholder.svg"}
                           alt={promo.infoPromo}
@@ -177,13 +178,7 @@ export default function Home() {
                             }
                             aria-label={saved ? "Guardado" : "Guardar"}
                           >
-                            <Heart
-                              className={`w-6 h-6 stroke-black ${saved
-                                ? "fill-[#EE733B] animate-heartbeat"
-                                : "fill-none hover:fill-[#EE733B]/20"
-                                }`}
-                              strokeWidth={1.5}
-                            />
+                             <Wish saved={saved} />
                           </button>
                         </div>
                       </div>
