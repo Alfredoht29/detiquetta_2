@@ -104,7 +104,7 @@ const Page: React.FC = () => {
               className="landscape:w-2/5 object-cover rounded-lg mb-6"
             />
 
-            <div className="p-6 border rounded-lg shadow-sm text-center w-2/5">
+            <div className="p-6 border rounded-lg shadow-sm text-center w-1/2">
               <h2 className="text-2xl font-bold">{selectedPromo.infoPromo}</h2>
               <p className="text-gray-600 mt-2">
                 Expira:{" "}

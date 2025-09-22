@@ -74,7 +74,7 @@ export default function Home() {
               className="landscape:w-2/5 object-cover rounded-lg mb-6"
             />
 
-            <div className="p-6 border rounded-lg shadow-sm text-center w-2/5">
+            <div className="p-6 border rounded-lg shadow-sm text-center w-1/2">
               <h2 className="text-2xl font-bold">{selectedPromo.infoPromo}</h2>
               <p className="text-gray-600 mt-2">
                 Expira:{" "}
@@ -129,7 +129,7 @@ export default function Home() {
       </div>
 
       <div id="slide2" className="carousel-item w-full">
-        <div className="h-full mx-auto overflow-y-auto no-scrollbar flex items-center justify-center landscape:translate-y-1/4">
+        <div className="h-full mx-auto overflow-y-auto no-scrollbar flex items-center justify-center landscape:translate-y-64">
           <div className="max-h-full p-4">
             <h2 className="text-2xl font-bold mb-4">Promociones Destacadas</h2>
             {loading ? (
