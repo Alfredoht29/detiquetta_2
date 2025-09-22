@@ -97,31 +97,32 @@ const Page: React.FC = () => {
     <div className="h-full pb-4 overflow-y-auto no-scrollbar flex items-center justify-center">
       <div className="w-screen">
         {selectedPromo ? (
-          <div className="landscape:w-1/2 landscape:mx-auto landscape:mt-20 flex flex-col md:flex-row items-center p-4 border rounded-lg shadow-lg">
+          <div className="landscape:w-1/2 landscape:mx-auto landscape:mt-20 flex flex-col items-center justify-center p-4 border rounded-lg shadow-lg">
             <img
               src={selectedPromo.urlPromotion}
               alt="Promo"
-              className="w-80 h-80 object-cover rounded-lg"
+              className="landscape:w-2/5 object-cover rounded-lg mb-6"
             />
-            <div className="p-6 border rounded-lg shadow-sm">
-              <div className="ml-6 text-left">
-                <h2 className="text-2xl font-bold">{selectedPromo.infoPromo}</h2>
-                <p className="text-gray-600 mt-2">
-                  Expira: {new Date(selectedPromo.expirationDate).toLocaleDateString("es-ES")}
-                </p>
-                <div className="flex space-x-4 mt-4">
-                  <button
-                    className="bg-red-500 text-white w-14 h-14 rounded-full flex items-center justify-center"
-                    onClick={() => setSelectedPromo(null)}
-                  >
-                    <CircleX className="w-7 h-7" />
+
+            <div className="p-6 border rounded-lg shadow-sm text-center w-2/5">
+              <h2 className="text-2xl font-bold">{selectedPromo.infoPromo}</h2>
+              <p className="text-gray-600 mt-2">
+                Expira:{" "}
+                {new Date(selectedPromo.expirationDate).toLocaleDateString("es-ES")}
+              </p>
+
+              <div className="flex justify-center space-x-4 mt-4">
+                <button
+                  className="bg-red-500 text-white w-14 h-14 rounded-full flex items-center justify-center"
+                  onClick={() => setSelectedPromo(null)}
+                >
+                  <CircleX className="w-7 h-7" />
+                </button>
+                <Link href={`/restaurant/${selectedPromo.restaurant.documentId}`}>
+                  <button className="bg-[#EE733B] text-white w-14 h-14 rounded-full flex items-center justify-center">
+                    <Store className="w-7 h-7" />
                   </button>
-                  <Link href={`/restaurant/${selectedPromo.restaurant.documentId}`}>
-                    <button className="bg-[#EE733B] text-white w-14 h-14 rounded-full flex items-center justify-center">
-                      <Store className="w-7 h-7" />
-                    </button>
-                  </Link>
-                </div>
+                </Link>
               </div>
             </div>
           </div>
@@ -176,7 +177,7 @@ const Page: React.FC = () => {
                         key={promo.id}
                         className="relative flex flex-col rounded-lg border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl"
                       >
-                        <div className="relative w-full aspect-[4/5] bg-gray-100">
+                        <div className="relative w-full aspect-[2/3] bg-gray-100">
                           <img
                             src={promo.urlPromotion || "/placeholder.svg"}
                             alt={promo.infoPromo}
@@ -203,7 +204,7 @@ const Page: React.FC = () => {
                               }
                               aria-label={saved ? "Guardado" : "Guardar"}
                             >
-                               <Wish saved={saved} />
+                              <Wish saved={saved} />
                             </button>
                           </div>
                         </div>

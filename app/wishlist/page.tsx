@@ -95,11 +95,11 @@ export default function SavedPromos() {
                 {promos.map((promo) => (
                   <tr key={promo.id} className="border-b border-black">
                     <td>
-                      <div className="w-20 h-20 rounded">
+                      <div className="w-64 h-64 rounded">
                         <img
                           src={promo.urlPromotion || "/placeholder.svg"}
                           alt={promo.infoPromo}
-                          className="w-20 h-20 object-cover rounded"
+                          className="w-64 h-64 object-cover rounded"
                         />
                       </div>
                     </td>
