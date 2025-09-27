@@ -67,11 +67,11 @@ export default function Home() {
     return (
       <div className="h-full pb-4 overflow-y-auto no-scrollbar flex items-center justify-center">
         <div className="w-screen">
-          <div className="landscape:w-1/2 landscape:mx-auto landscape:mt-20 flex flex-col items-center justify-center p-4 border rounded-lg shadow-lg">
+          <div className="landscape:w-1/2 landscape:mx-auto landscape:mt-20  flex flex-col items-center justify-center p-4 border rounded-lg shadow-lg">
             <img
               src={selectedPromo.urlPromotion}
               alt="Promo"
-              className="landscape:w-2/5 object-cover rounded-lg mb-6"
+              className="w-3/5 object-cover rounded-lg mb-6"
             />
 
             <div className="p-6 border rounded-lg shadow-sm text-center w-1/2">
@@ -149,7 +149,7 @@ export default function Home() {
                   return (
                     <div
                       key={promo.id}
-                      className="relative flex flex-col rounded-lg border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl"
+                      className="relative w-3/4 flex flex-col rounded-lg border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl"
                     >
                       <div className="relative aspect-[2/3] bg-gray-100">
                         <img

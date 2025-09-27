@@ -58,7 +58,6 @@ const Page: React.FC = () => {
         const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/promotions`, { params });
 
         const mapped: Promotion[] = resp.data.data
-          .filter((item: any) => item.relevance === 1)
           .map((item: any) => ({
             id: item.id,
             documentId: item.documentId,
@@ -89,7 +88,7 @@ const Page: React.FC = () => {
 
   const filtered = promotions
     .filter((p) => !selectedCategory || p.Categoria === selectedCategory)
-    .sort((a, b) => b.relevance - a.relevance);
+    .sort((a, b) => a.relevance - b.relevance);
 
   const categories = Array.from(new Set(promotions.map((p) => p.Categoria)));
 
@@ -97,11 +96,11 @@ const Page: React.FC = () => {
     <div className="h-full pb-4 overflow-y-auto no-scrollbar flex items-center justify-center">
       <div className="w-screen">
         {selectedPromo ? (
-          <div className="landscape:w-1/2 landscape:mx-auto landscape:mt-20 flex flex-col items-center justify-center p-4 border rounded-lg shadow-lg">
+          <div className="landscape:mx-auto landscape:mt-20 flex flex-col items-center justify-center p-4 border rounded-lg shadow-lg">
             <img
               src={selectedPromo.urlPromotion}
               alt="Promo"
-              className="landscape:w-2/5 object-cover rounded-lg mb-6"
+              className="w-3/5 object-cover rounded-lg mb-6"
             />
 
             <div className="p-6 border rounded-lg shadow-sm text-center w-1/2">
@@ -143,17 +142,6 @@ const Page: React.FC = () => {
                   </option>
                 ))}
               </select> */}
-              <select
-                className="select select-bordered w-full max-w-xs"
-                value={selectedDay}
-                onChange={(e) => setSelectedDay(e.target.value)}
-              >
-                {daysOfWeek.map(({ label, value }) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
             </div>
             <div
               ref={containerRef}
@@ -175,9 +163,9 @@ const Page: React.FC = () => {
                     return (
                       <div
                         key={promo.id}
-                        className="relative flex flex-col rounded-lg border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl"
+                        className="relative flex flex-col rounded-lg  w-3/4 border-2 border-solid border-black overflow-hidden cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl"
                       >
-                        <div className="relative w-full aspect-[2/3] bg-gray-100">
+                        <div className="relative aspect-[2/3] bg-gray-100">
                           <img
                             src={promo.urlPromotion || "/placeholder.svg"}
                             alt={promo.infoPromo}
