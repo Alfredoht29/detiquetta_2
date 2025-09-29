@@ -15,10 +15,25 @@ export default function Home() {
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPromo, setSelectedPromo] = useState<Promotion | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedDay, setSelectedDay] = useState(
+    new Date().getDay().toString()
+  );
 
   const promoIds = useSavePromoStore((s) => s.promoIds);
   const addPromoId = useSavePromoStore((s) => s.addPromoId);
   const removePromoId = useSavePromoStore((s) => s.removePromoId);
+
+  const daysOfWeek = [
+    { label: "Todos los días", value: "" },
+    { label: "Domingo", value: "0" },
+    { label: "Lunes", value: "1" },
+    { label: "Martes", value: "2" },
+    { label: "Miércoles", value: "3" },
+    { label: "Jueves", value: "4" },
+    { label: "Viernes", value: "5" },
+    { label: "Sábado", value: "6" },
+  ];
 
   useEffect(() => {
     const fetchPromotions = async () => {
@@ -26,11 +41,15 @@ export default function Home() {
 
       setLoading(true);
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/promotions`, {
-          params: {
-            codeCity: selectedLocation.codecity,
-          },
-        });
+        const params: Record<string, string> = {
+          codeCity: selectedLocation.codecity.toString(),
+        };
+
+        if (selectedDay !== "") {
+          params.weekDay = selectedDay;
+        }
+
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/promotions`, { params })
 
         const mappedPromos: Promotion[] = res.data.data
           .filter((item: any) => item.relevance === 1)
@@ -61,7 +80,7 @@ export default function Home() {
     };
 
     fetchPromotions();
-  }, [selectedLocation]);
+  }, [selectedDay,selectedLocation]);
 
   if (selectedPromo) {
     return (
@@ -129,9 +148,20 @@ export default function Home() {
       </div>
 
       <div id="slide2" className="carousel-item w-full">
-        <div className="h-full mx-auto overflow-y-auto no-scrollbar flex items-center justify-center landscape:translate-y-64">
+        <div className="h-full mx-auto overflow-y-auto no-scrollbar flex items-center justify-center">
           <div className="max-h-full p-4">
             <h2 className="text-2xl font-bold mb-4">Promociones Destacadas</h2>
+            <select
+              className="select select-bordered w-full max-w-xs mb-8"
+              value={selectedDay}
+              onChange={(e) => setSelectedDay(e.target.value)}
+            >
+              {daysOfWeek.map(({ label, value }) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 place-items-center">
                 {Array(6)
