@@ -68,7 +68,7 @@ const Nosotros = () => {
           </div>
           <div className="flex items-start font-bold pl-4 roboto-mono-font">
             <span className="text-2xl align-super">$</span>
-            <p className="text-6xl">7890</p>
+            <p className="text-6xl">1890</p>
           </div>
           <p className="text-justify mt-4">
             Para líderes empresarios que buscan la atención de su categoría.
