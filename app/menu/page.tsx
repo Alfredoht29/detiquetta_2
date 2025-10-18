@@ -3,10 +3,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { CircleX, Heart, Store } from "lucide-react";
+import { CircleX, Heart, Store, MessageCircle } from "lucide-react";
 import useSavePromoStore from "../stores/savePromoStore";
 import { useLocationStore } from "../stores/useLocationStore";
 import { Promotion } from "../interfaces/promotion";
+import Image from "next/image";
 import Wish from "../components/Wish";
 
 const daysOfWeek = [
@@ -37,6 +38,14 @@ const Page: React.FC = () => {
   const addPromoId = useSavePromoStore((s) => s.addPromoId);
   const removePromoId = useSavePromoStore((s) => s.removePromoId);
 
+  const openWhatsApp = (phoneNumber: string, promoInfo: string) => {
+    const message = `Hola! Estoy interesado en la promoción: ${promoInfo}`;
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+    window.open(url, "_blank");
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -55,8 +64,12 @@ const Page: React.FC = () => {
           params.weekDay = selectedDay;
         }
 
-        const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/promotions`, { params });
+        const resp = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/promotions`,
+          { params }
+        );
 
+        //
         const mapped: Promotion[] = resp.data.data
           .map((item: any) => ({
             id: item.id,
@@ -72,8 +85,17 @@ const Page: React.FC = () => {
             createdAt: item.createdAt,
             updatedAt: item.updatedAt,
             publishedAt: item.publishedAt,
-            restaurant: item.restaurant ?? { id: 0, documentId: "", nombre: "" },
-          }));
+            restaurant: item.restaurant ?? {
+              id: 0,
+              documentId: "",
+              nombre: "",
+              delivery_num: "",
+            },
+          }))
+          .sort(
+            (a: { relevance: number }, b: { relevance: number }) =>
+              a.relevance - b.relevance
+          );
 
         setPromotions(mapped);
       } catch (err) {
@@ -107,7 +129,9 @@ const Page: React.FC = () => {
               <h2 className="text-2xl font-bold">{selectedPromo.infoPromo}</h2>
               <p className="text-gray-600 mt-2">
                 Expira:{" "}
-                {new Date(selectedPromo.expirationDate).toLocaleDateString("es-ES")}
+                {new Date(selectedPromo.expirationDate).toLocaleDateString(
+                  "es-ES"
+                )}
               </p>
 
               <div className="flex justify-center space-x-4 mt-4">
@@ -117,7 +141,25 @@ const Page: React.FC = () => {
                 >
                   <CircleX className="w-7 h-7" />
                 </button>
-                <Link href={`/restaurant/${selectedPromo.restaurant.documentId}`}>
+                <button
+                  className="bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center"
+                  onClick={() =>
+                    openWhatsApp(
+                      selectedPromo.restaurant.delivery_num,
+                      selectedPromo.infoPromo
+                    )
+                  }
+                >
+                  <Image
+                    src={"assets/compra.svg"}
+                    alt={"compra"}
+                    width={40}
+                    height={40}
+                  />
+                </button>
+                <Link
+                  href={`/restaurant/${selectedPromo.restaurant.documentId}`}
+                >
                   <button className="bg-[#EE733B] text-white w-14 h-14 rounded-full flex items-center justify-center">
                     <Store className="w-7 h-7" />
                   </button>

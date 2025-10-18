@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Heart, Store, CircleX } from "lucide-react";
+import { Heart, Store, CircleX,MessageCircle} from "lucide-react";
 import Link from "next/link";
 import { useLocationStore } from "../app/stores/useLocationStore";
 import useSavePromoStore from "./stores/savePromoStore";
@@ -34,6 +34,13 @@ export default function Home() {
     { label: "Viernes", value: "5" },
     { label: "Sábado", value: "6" },
   ];
+  const openWhatsApp = (phoneNumber: string, promoInfo: string) => {
+    const message = `Hola! Estoy interesado en la promoción: ${promoInfo}`;
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+    window.open(url, "_blank");
+  };
 
   useEffect(() => {
     const fetchPromotions = async () => {
@@ -67,9 +74,13 @@ export default function Home() {
             createdAt: item.createdAt,
             updatedAt: item.updatedAt,
             publishedAt: item.publishedAt,
-            restaurant: item.restaurant ?? { id: 0, documentId: "", nombre: "" },
+            restaurant: item.restaurant ?? {
+              id: 0,
+              documentId: "",
+              nombre: "",
+              delivery_num: "",
+            },
           }));
-
 
         setPromotions(mappedPromos);
       } catch (err) {
@@ -97,7 +108,9 @@ export default function Home() {
               <h2 className="text-2xl font-bold">{selectedPromo.infoPromo}</h2>
               <p className="text-gray-600 mt-2">
                 Expira:{" "}
-                {new Date(selectedPromo.expirationDate).toLocaleDateString("es-ES")}
+                {new Date(selectedPromo.expirationDate).toLocaleDateString(
+                  "es-ES"
+                )}
               </p>
 
               <div className="flex justify-center space-x-4 mt-4">
@@ -107,7 +120,20 @@ export default function Home() {
                 >
                   <CircleX className="w-7 h-7" />
                 </button>
-                <Link href={`/restaurant/${selectedPromo.restaurant.documentId}`}>
+                <button
+                  className="bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center"
+                  onClick={() =>
+                    openWhatsApp(
+                      selectedPromo.restaurant.delivery_num,
+                      selectedPromo.infoPromo
+                    )
+                  }
+                >
+                  <MessageCircle className="w-7 h-7" />
+                </button>
+                <Link
+                  href={`/restaurant/${selectedPromo.restaurant.documentId}`}
+                >
                   <button className="bg-[#EE733B] text-white w-14 h-14 rounded-full flex items-center justify-center">
                     <Store className="w-7 h-7" />
                   </button>

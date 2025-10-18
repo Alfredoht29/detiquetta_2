@@ -16,5 +16,6 @@ export interface Promotion {
     id: number;
     documentId: string;
     nombre:string;
+    delivery_num:string;
   };
 }
