@@ -14,12 +14,11 @@ RUN npm ci
 # Copy application code
 COPY . .
 
-# Build the React app
+# Build Next.js app
 RUN npm run build
-
-# Serve with a simple Node server
-RUN npm install -g serve
 
 EXPOSE 3000
 
-CMD ["serve", "-s", "build", "-l", "3000"]
+ENV NODE_ENV=production
+
+CMD ["npm", "start"]
